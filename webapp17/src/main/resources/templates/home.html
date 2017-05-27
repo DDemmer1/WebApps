@@ -62,7 +62,7 @@
 
 		<tr th:each="result : ${results}">
 			<td><a th:text="${result.getTitle()}"
-				th:href="${'article?artricle=' + result}"></a></td>
+				th:href="${'article?article=' + result.getURI()}"></a></td>
 			<td th:text="${result.getTopic()}"></td>
 		</tr>
 	</table>
