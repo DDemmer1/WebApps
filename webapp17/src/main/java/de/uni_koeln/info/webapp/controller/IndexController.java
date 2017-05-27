@@ -18,7 +18,7 @@ import de.uni_koeln.spinfo.textengineering.ir.model.IRDocument;
 @RequestMapping(value = "index/")
 public class IndexController {
 
-	@Autowired
+//	@Autowired
 	private Searcher searcher;
 
 	/**

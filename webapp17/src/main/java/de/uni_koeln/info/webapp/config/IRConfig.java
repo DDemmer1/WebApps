@@ -20,8 +20,10 @@ import de.uni_koeln.spinfo.textengineering.ir.model.newspaper.NewsCorpus;
 @Configuration
 public class IRConfig {
 	
+	
 	private static final String indexDir = "luceneIndex";
 	private static final String textDir = "texte/";
+	
 
 	@Bean
 	public Searcher searcher() throws IOException {
