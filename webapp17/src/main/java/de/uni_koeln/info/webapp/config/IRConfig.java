@@ -1,13 +1,16 @@
 package de.uni_koeln.info.webapp.config;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.classification.SimpleNaiveBayesClassifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import de.uni_koeln.spinfo.textengineering.ir.boole.InvertedIndex;
 import de.uni_koeln.spinfo.textengineering.ir.classifier.ClassifierStrategy;
 import de.uni_koeln.spinfo.textengineering.ir.classifier.LuceneAdapter;
 import de.uni_koeln.spinfo.textengineering.ir.classifier.TextClassifier;
@@ -16,6 +19,8 @@ import de.uni_koeln.spinfo.textengineering.ir.lucene.Searcher;
 import de.uni_koeln.spinfo.textengineering.ir.model.Corpus;
 import de.uni_koeln.spinfo.textengineering.ir.model.IRDocument;
 import de.uni_koeln.spinfo.textengineering.ir.model.newspaper.NewsCorpus;
+import de.uni_koeln.spinfo.textengineering.ir.ranked.InvIndex;
+import de.uni_koeln.spinfo.textengineering.ir.ranked.RankedRetrieval;
 
 @Configuration
 public class IRConfig {
@@ -23,8 +28,18 @@ public class IRConfig {
 	
 	private static final String indexDir = "luceneIndex";
 	private static final String textDir = "texte/";
-	
 
+	
+	@Bean
+	public List<IRDocument> tmpResults(){
+		return new ArrayList<>();
+	}
+	
+	@Bean
+	public RankedRetrieval invIndex(){
+		return new InvIndex(new NewsCorpus(textDir));
+	}
+	
 	@Bean
 	public Searcher searcher() throws IOException {
 		Indexer indexer = new Indexer(indexDir);
