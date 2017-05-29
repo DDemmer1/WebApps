@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8" />
 
-<!-- Bootstrap -->
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
 	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
@@ -12,28 +11,28 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
 	integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
 	crossorigin="anonymous" />
-	
+
 <link rel="stylesheet" href="../css/style.css"/>
+
 
 </head>
 <body>
-
-	<!-- Navigationsbar -->
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed"
-					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-					aria-controls="navbar"></button>
-				<a class="navbar-brand" href="/">News Search</a>
-			</div>
-
-
-		</div>
-	</nav>
 	<div class="container">
-		<br /> <br /> <br />
+		<!-- Navigationsbar -->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+						aria-controls="navbar"></button>
+					<a class="navbar-brand" href="/">News Search</a>
+				</div>
 
+
+			</div>
+		</nav>
+
+		<br /> <br /> <br />
 		<h1 class="page-header">News Search</h1>
 
 		<!-- Suchleiste -->
@@ -48,29 +47,24 @@
 				</div>
 			</div>
 		</form>
-		<br />
-		<!--Anzeige Container für den Artikel -->
-		<div class="well">
-			<h3 th:text="${title}">Artikel</h3>
-			<p th:text="${text}">text</p>
-			<form th:action="${uri}">
-			<input type="submit" value="Show full website"/>
-			</form>
-		</div>
 
-		
-
-		<!-- Ähnliche Artikel -->
-		<div class="col-sm-4">
-			<h3>More like this</h3>
-			<div th:each="article : ${similar}" class="list-group">
-				<a th:text="${article.getTitle()}"
-					th:href="${'article?uri=' + article.getURI()}"
-					class="list-group-item">Artikel</a>
-
-			</div>
-		</div>
-		<!-- /.col-sm-4 -->
+		<!-- Tabelle für Ergebnisse -->
+		<table class="table table-striped">
+			<tr>
+				<th>Title</th>
+				<th>Topic</th>
+			</tr>
+			<!-- Iterieren über Ergebnisliste -->
+			<tr th:each="result : ${results}">
+				<!-- Jeweils Titel und Topic in eine Zeile schreiben. Dem Titel wird ein link mit Verweis auf die URI hinzugefügt -->
+				<td><a th:text="${result.getTitle()}"
+					th:href="${'article?uri=' + result.getURI()}"></a></td>
+				<td th:text="${result.getTopic()}"></td>
+			</tr>
+		</table>
+		<form action="#more" method="post">
+		<button class="default">Show more</button>
+		</form>
 
 
 		<!-- Bootstrap -->

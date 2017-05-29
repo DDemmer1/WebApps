@@ -75,7 +75,7 @@ public class IndexController {
 			e.printStackTrace();
 		}
 
-		return "home";
+		return "results";
 	}
 
 	/**
@@ -93,6 +93,8 @@ public class IndexController {
 
 		model.addAttribute("text", ird.getContent());
 		model.addAttribute("title", ird.getTitle());
+		model.addAttribute("uri", ird.getURI());
+
 		
 		model.addAttribute("similar", IRUtils.getMostSimilar(ird, index , 4));
 
