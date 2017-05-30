@@ -1,16 +1,14 @@
 package de.uni_koeln.info.webapp.config;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.lucene.classification.SimpleNaiveBayesClassifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import de.uni_koeln.spinfo.textengineering.ir.boole.InvertedIndex;
 import de.uni_koeln.spinfo.textengineering.ir.classifier.ClassifierStrategy;
 import de.uni_koeln.spinfo.textengineering.ir.classifier.LuceneAdapter;
 import de.uni_koeln.spinfo.textengineering.ir.classifier.TextClassifier;
@@ -31,8 +29,13 @@ public class IRConfig {
 
 	
 	@Bean
-	public List<IRDocument> tmpResults(){
-		return new ArrayList<>();
+	public Set<IRDocument> tmpResults(){
+		return new HashSet<>();
+	}
+	
+	@Bean
+	public int articlesToShow(){
+		return 10;
 	}
 	
 	@Bean

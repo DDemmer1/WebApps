@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,14 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.uni_koeln.spinfo.textengineering.ir.lucene.Searcher;
 import de.uni_koeln.spinfo.textengineering.ir.model.IRDocument;
-import de.uni_koeln.spinfo.textengineering.ir.model.newspaper.NewsCorpus;
-import de.uni_koeln.spinfo.textengineering.ir.ranked.InvIndex;
 import de.uni_koeln.spinfo.textengineering.ir.ranked.RankedRetrieval;
 import de.uni_koeln.spinfo.textengineering.ir.util.IRUtils;
 
@@ -32,10 +32,14 @@ public class IndexController {
 	private Searcher searcher;
 
 	@Autowired
-	private List<IRDocument> tmpResults;
+	private Set<IRDocument> tmpResults;
 
 	@Autowired
 	private RankedRetrieval index;
+
+	@Autowired
+	private int articlesToShow;
+
 	/**
 	 * Calling the URL:
 	 * <a href= "http://localhost:8080/index/size">http://localhost:8080/index/
@@ -53,21 +57,70 @@ public class IndexController {
 		return String.valueOf(searcher.indexSize());
 	}
 
+	/**
+	 * Durchsucht den NewsCorpus nach der Begriff im Suchfeld.
+	 * Die Suchergebnisse werden in einer List<IRDocument> gespeichert. 
+	 * 
+	 * 
+	 * @param request
+	 * @param model
+	 * @return text/html
+	 */
 	@GetMapping(value = "search")
 	public String search(HttpServletRequest request, Model model) {
+
+		articlesToShow = 10;
 
 		try {
 			String query = request.getParameter("query");
 			if (query == "" || query == null) {
+				System.out.println("query is empty/null");
 				return "home";
 			}
-
+			//query wird dem "show more" button übergeben
+			model.addAttribute("query", query);
+			
+			//Ergebnisliste wird geleert
 			tmpResults.clear();
-			tmpResults.addAll(searcher.search(query + "~", 10));
+			tmpResults.addAll(searcher.search(query + "~", articlesToShow));
+			
+			if (!tmpResults.isEmpty()) {
+				model.addAttribute("results", tmpResults);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return "results";
+	}
+	
+
+	/**
+	 * 
+	 * Zeigt 10 zusätzliche Artikel in der Ergebnistabelle an.
+	 * Dazu wird nochmal mit dem selben query gesucht und die anzahl der Erbegnisse um 10 erhöht.
+	 * 
+	 * @param query
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "showmore/{query}")
+	public String showMoreResults(@PathVariable("query") String query, Model model) {
+		System.out.println(query);
+		articlesToShow += 10;
+
+		try {
+			model.addAttribute("query", query);
+			tmpResults.clear();
+			tmpResults.addAll(searcher.search(query + "~", articlesToShow));
 
 			if (!tmpResults.isEmpty()) {
 				model.addAttribute("results", tmpResults);
 			}
+
+			model.addAttribute("query", query);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -78,42 +131,9 @@ public class IndexController {
 		return "results";
 	}
 
-	/**
-	 * 
-	 * 
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@GetMapping(value = "/article")
-	public String articleHandler(HttpServletRequest request, Model model) {
-		String uri = request.getParameter("uri");
+	
 
-		IRDocument ird = getIRDocumentFromURI(uri);
-
-		model.addAttribute("text", ird.getContent());
-		model.addAttribute("title", ird.getTitle());
-		model.addAttribute("uri", ird.getURI());
-
-		
-		model.addAttribute("similar", IRUtils.getMostSimilar(ird, index , 4));
-
-		return "article";
-	}
-
-	private IRDocument getIRDocumentFromURI(String uriString) {
-		try {
-			URI uri = new URI(uriString);
-			for (IRDocument ird : tmpResults) {
-				if (uri.equals(ird.getURI())) {
-					return ird;
-				}
-			}
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	
 
 	/**
 	 * Search a certain document field by calling the URL: <code><a href=

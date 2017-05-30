@@ -12,7 +12,7 @@
 	integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
 	crossorigin="anonymous" />
 
-<link rel="stylesheet" href="../css/style.css"/>
+<link rel="stylesheet" href="css/style.css" />
 
 
 </head>
@@ -47,7 +47,7 @@
 				</div>
 			</div>
 		</form>
-
+		<br />
 		<!-- Tabelle für Ergebnisse -->
 		<table class="table table-striped">
 			<tr>
@@ -58,13 +58,15 @@
 			<tr th:each="result : ${results}">
 				<!-- Jeweils Titel und Topic in eine Zeile schreiben. Dem Titel wird ein link mit Verweis auf die URI hinzugefügt -->
 				<td><a th:text="${result.getTitle()}"
-					th:href="${'article?uri=' + result.getURI()}"></a></td>
+					th:href="${'/article/detail?uri=' + result.getURI()}"></a></td>
 				<td th:text="${result.getTopic()}"></td>
 			</tr>
 		</table>
-		<form action="#more" method="post">
-		<button class="default">Show more</button>
-		</form>
+		
+		
+		<!-- Show more Button -->
+		<form th:action="'/index/showmore/' +  ${query}" method="post">
+		<input type="submit" value="show more"/></form>
 
 
 		<!-- Bootstrap -->

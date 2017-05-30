@@ -65,7 +65,7 @@
 			<h3>More like this</h3>
 			<div th:each="article : ${similar}" class="list-group">
 				<a th:text="${article.getTitle()}"
-					th:href="${'article?uri=' + article.getURI()}"
+					th:href="${'/article/detail?uri=' + article.getURI()}"
 					class="list-group-item">Artikel</a>
 
 			</div>
